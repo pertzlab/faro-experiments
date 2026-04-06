@@ -1,7 +1,7 @@
 # /// script
 # requires-python = "<=3.12"
 # dependencies = [
-#   "napari[pyqt5] == 0.6.1",
+#   "napari[pyqt6] == 0.6.1",
 #   "pandas",
 #   "magicgui",
 #   "dask",
@@ -11,7 +11,8 @@
 #   "matplotlib",
 #   "numpy",
 #   "napari-timestamper",
-#   "opencv-python"
+#   "opencv-python",
+#   "zarr>=3"
 # ]
 # ///
 
@@ -25,13 +26,13 @@ from tifffile import imread as tiff_imread
 import dask.array as da
 from skimage.io.collection import alphanumeric_key
 import skimage
-import dask.array as da
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dask import delayed
 import numpy as np
 from pathlib import Path
 import pyarrow.parquet as pq
 import csv
+import zarr
 
 
 RAW_FOLDER = "raw"
@@ -43,6 +44,13 @@ LABELS_RINGS = "labels_ring"
 TRACKS_FOLDER = "tracks"
 
 DEFAULT_FOLDER = "\\\\izbkingston.izb.unibe.ch\\imaging.data\\PertzLab\\optoRTK_CedricZ\\experimental_data"
+
+# OME-Zarr state
+_zarr_store = None
+_zarr_raw = None
+_zarr_axes = None
+_zarr_channel_names = None
+_zarr_n_imaging_channels = None  # number of non-stim channels
 
 
 class Layer_Info:
@@ -258,6 +266,106 @@ def tiff_to_da(folder, filenames, lazy=True, num_workers=8):
     return stack
 
 
+def _init_zarr(path):
+    """Detect and open an OME-Zarr store in the project directory."""
+    global _zarr_store, _zarr_raw, _zarr_axes, _zarr_channel_names, _zarr_n_imaging_channels
+    zarr_path = os.path.join(path, "acquisition.ome.zarr")
+    if not os.path.isdir(zarr_path):
+        _zarr_store = _zarr_raw = _zarr_axes = _zarr_channel_names = None
+        _zarr_n_imaging_channels = None
+        return False
+
+    store = zarr.open(zarr_path, mode="r")
+    _zarr_store = store
+    _zarr_raw = store["0"]
+
+    ome = dict(store.attrs).get("ome", {})
+    multiscales = ome.get("multiscales", [{}])
+    axes = multiscales[0].get("axes", [])
+    _zarr_axes = [a["name"] for a in axes]
+
+    channels = ome.get("omero", {}).get("channels", [])
+    _zarr_channel_names = [ch.get("label", f"c{i}") for i, ch in enumerate(channels)]
+
+    # Channels named "stim_*" are stim channels; the rest are imaging channels
+    _zarr_n_imaging_channels = sum(
+        1 for name in _zarr_channel_names if not name.startswith("stim_")
+    )
+    print(
+        f"OME-Zarr detected: axes={_zarr_axes}, "
+        f"channels={_zarr_channel_names} "
+        f"({_zarr_n_imaging_channels} imaging + "
+        f"{len(_zarr_channel_names) - _zarr_n_imaging_channels} stim)"
+    )
+    return True
+
+
+def _zarr_has_position_axis():
+    return _zarr_axes is not None and "p" in _zarr_axes
+
+
+def _zarr_load_raw(fov_idx, stim=False):
+    """Load raw or stim channels for a given FOV from the zarr store as dask array.
+
+    Returns array with shape (t, c, y, x).
+    """
+    has_p = _zarr_has_position_axis()
+    has_c = "c" in _zarr_axes
+
+    raw_da = da.from_zarr(_zarr_raw)
+
+    if has_p and has_c:
+        # (t, p, c, y, x) -> select position
+        data = raw_da[:, fov_idx, :, :, :]  # (t, c, y, x)
+    elif has_p:
+        # (t, p, y, x)
+        data = raw_da[:, fov_idx, :, :]  # (t, y, x)
+        data = data[:, np.newaxis, :, :]  # (t, 1, y, x)
+    elif has_c:
+        # (t, c, y, x) - single position
+        data = raw_da
+    else:
+        # (t, y, x)
+        data = raw_da[:, np.newaxis, :, :]
+
+    # Split imaging vs stim channels
+    if has_c and _zarr_n_imaging_channels is not None:
+        if stim:
+            data = data[:, _zarr_n_imaging_channels:, :, :]
+        else:
+            data = data[:, :_zarr_n_imaging_channels, :, :]
+
+    return data
+
+
+def _zarr_load_label(label_name, fov_idx):
+    """Load a label array for a given FOV from the zarr store as dask array.
+
+    Returns array with shape (t, y, x).
+    """
+    lbl_path = f"labels/{label_name}/0"
+    try:
+        lbl_arr = _zarr_store[lbl_path]
+    except KeyError:
+        return None
+
+    lbl_da = da.from_zarr(lbl_arr)
+    has_p = _zarr_has_position_axis()
+
+    if has_p:
+        return lbl_da[:, fov_idx, :, :]  # (t, y, x)
+    return lbl_da  # (t, y, x)
+
+
+# Mapping from TIFF folder names to zarr label group names
+_FOLDER_TO_ZARR_LABEL = {
+    PARTICLES_FOLDER: "particles",
+    MASK_FOLDER: "labels",
+    LABELS_RINGS: "labels_ring",
+    LIGHT_MASK_FOLDER: "stim_mask",
+}
+
+
 ##
 def update_or_add_layer(layer_name, data, colormap, blending, layer_type="image"):
     layer = viewer.layers[layer_name] if layer_name in viewer.layers else None
@@ -379,7 +487,25 @@ def selection_widget(
         if folder_info is None:
             print(f"Folder {folder} not found")
             continue
-        data = tiff_to_da(folder_info.folder_name, filenames=filenames, lazy=lazy)
+
+        # --- load data from zarr or TIFF ---
+        data = None
+        if _zarr_store is not None:
+            fov_idx = int(fov) if fov is not None else 0
+            if folder == RAW_FOLDER:
+                data = _zarr_load_raw(fov_idx, stim=False)
+            elif folder == STIM_FOLDER:
+                data = _zarr_load_raw(fov_idx, stim=True)
+                if data is not None and data.shape[1] == 0:
+                    # no stim channels stored in raw; try stim_mask label
+                    data = _zarr_load_label("stim_mask", fov_idx)
+            else:
+                zarr_label = _FOLDER_TO_ZARR_LABEL.get(folder)
+                if zarr_label is not None:
+                    data = _zarr_load_label(zarr_label, fov_idx)
+        else:
+            data = tiff_to_da(folder_info.folder_name, filenames=filenames, lazy=lazy)
+
         if data is None:
             print(f"No data found for {folder} in {fov}")
             continue
@@ -586,6 +712,8 @@ def directorypicker(
         except ValueError:
             pass
     currently_added_layers = []
+
+    _init_zarr(project_path)
 
     cell_lines = get_cell_lines()
     if cell_lines:
