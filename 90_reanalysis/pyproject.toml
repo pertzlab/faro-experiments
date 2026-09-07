@@ -1,0 +1,13 @@
+[project]
+name = "exp-90-reanalysis"
+version = "0.0.0"
+requires-python = ">=3.11"
+dependencies = ["faro"]
+
+[tool.uv.sources]
+# Best-effort pin: the faro main commit that last touched this experiment
+# before it was migrated out of the faro repo (2026-09). A uv.lock is
+# created on first revival (uv sync), not at migration.
+faro = { git = "https://github.com/pertzlab/faro.git", rev = "f0b5a72b5e59eef73f8506cf724c82290e16bbb7" }
+# During active on-scope development, point at a local worktree instead:
+# faro = { path = "../../faro", editable = true }

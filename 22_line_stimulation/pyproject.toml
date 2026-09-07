@@ -1,0 +1,13 @@
+[project]
+name = "exp-22-line-stimulation"
+version = "0.0.0"
+requires-python = ">=3.11"
+dependencies = ["faro"]
+
+[tool.uv.sources]
+# Best-effort pin: the faro main commit that last touched this experiment
+# before it was migrated out of the faro repo (2026-09). A uv.lock is
+# created on first revival (uv sync), not at migration.
+faro = { git = "https://github.com/pertzlab/faro.git", rev = "ea8e1e7728989e3b8e5b1b7b5ed3d273b9179f32" }
+# During active on-scope development, point at a local worktree instead:
+# faro = { path = "../../faro", editable = true }
