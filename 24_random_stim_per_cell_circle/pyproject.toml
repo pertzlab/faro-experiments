@@ -1,0 +1,29 @@
+[project]
+name = "exp-24-random-stim-per-cell-circle"
+version = "0.0.0"
+requires-python = ">=3.12"
+dependencies = [
+    # faro's own git sources (pertzlab pymmcore-widgets, napari-micromanager
+    # main, the virtual microscope) and index pins carry over to this project.
+    "faro[cellpose,motile]",
+    "matplotlib",
+    # "jupyterlab",   # uncomment if you run notebooks with Jupyter rather than VS Code
+]
+
+[project.optional-dependencies]
+# Only needed for analyze_stim_intensity.ipynb / stim_analysis.py, not for
+# running the experiment. Install with: uv sync --extra analysis
+analysis = [
+    "scikit-learn",
+    "scikit-image",
+    "tqdm",
+    "timm",             # hosts the DINOv3 weights on HuggingFace Hub
+    "napari-convpaint", # JAFAR upsampling head (napari_convpaint.jafar)
+]
+
+[tool.uv.sources]
+# Pick ONE of the three lines below (see templates/README.md in the faro repository).
+faro = { git = "https://github.com/pertzlab/faro.git", branch = "main" }
+# faro = { git = "https://github.com/pertzlab/faro.git", rev = "0123456789abcdef0123456789abcdef01234567" }
+# faro = { path = "../../faro", editable = true }
+napari-convpaint = { git = "https://github.com/hinderling/napari-convpaint.git", branch = "main" }
