@@ -1,15 +1,27 @@
 [project]
 name = "exp-23-random-stim-per-cell-14px-patches"
 version = "0.0.0"
-requires-python = ">=3.11"
-dependencies = ["faro"]
+requires-python = ">=3.12"
+dependencies = [
+    "faro[cellpose,motile]",
+    "matplotlib",
+]
+
+[project.optional-dependencies]
+# Only needed for analyze_stim_intensity.ipynb / stim_analysis.py.
+# Install with: uv sync --extra analysis
+analysis = [
+    "scikit-learn",
+    "scikit-image",
+    "tqdm",
+    "timm",             # hosts the DINOv3 weights on HuggingFace Hub
+    "napari-convpaint", # JAFAR upsampling head (napari_convpaint.jafar)
+]
 
 [tool.uv.sources]
-# Best-effort pin: the faro main commit that last touched this experiment
-# before it was migrated out of the faro repo (2026-09). A uv.lock is
-# created on first revival (uv sync), not at migration. NOTE: this
-# experiment is still active in the faro-pfs worktree; sync this folder
-# from there when that work lands.
-faro = { git = "https://github.com/pertzlab/faro.git", rev = "d366a18e223190e02ab0c3748da5101f511e77d2" }
-# During active on-scope development, point at a local worktree instead:
+# Pinned to the faro main commit the notebooks last ran against (exp_440,
+# September 2026). The notebook predates the load/start split of the
+# controller API; see 24_random_stim_per_cell_circle for the current form.
+faro = { git = "https://github.com/pertzlab/faro.git", rev = "11462358a517de2e6c6d4b976686ffe0992e190d" }
 # faro = { path = "../../faro", editable = true }
+napari-convpaint = { git = "https://github.com/hinderling/napari-convpaint.git", branch = "main" }
