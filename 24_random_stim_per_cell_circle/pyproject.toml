@@ -5,7 +5,7 @@ requires-python = ">=3.12"
 dependencies = [
     # faro's own git sources (pertzlab pymmcore-widgets, napari-micromanager
     # main, the virtual microscope) and index pins carry over to this project.
-    "faro[cellpose,motile]",
+    "faro[cellpose,motile,api75]",
     "matplotlib",
     # "jupyterlab",   # uncomment if you run notebooks with Jupyter rather than VS Code
 ]

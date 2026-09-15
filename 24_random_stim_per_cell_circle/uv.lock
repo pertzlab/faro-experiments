@@ -862,7 +862,7 @@ name = "exp-24-random-stim-per-cell-circle"
 version = "0.0.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "faro", extra = ["cellpose", "motile"] },
+    { name = "faro", extra = ["api75", "cellpose", "motile"] },
     { name = "matplotlib" },
 ]
 
@@ -877,7 +877,7 @@ analysis = [
 
 [package.metadata]
 requires-dist = [
-    { name = "faro", extras = ["cellpose", "motile"], git = "https://github.com/pertzlab/faro.git?branch=main" },
+    { name = "faro", extras = ["cellpose", "motile", "api75"], git = "https://github.com/pertzlab/faro.git?branch=main" },
     { name = "matplotlib" },
     { name = "napari-convpaint", marker = "extra == 'analysis'", git = "https://github.com/hinderling/napari-convpaint.git?branch=main" },
     { name = "scikit-image", marker = "extra == 'analysis'" },
@@ -912,6 +912,9 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
+api75 = [
+    { name = "pymmcore" },
+]
 cellpose = [
     { name = "cellpose" },
     { name = "opencv-python" },
@@ -3325,25 +3328,25 @@ wheels = [
 
 [[package]]
 name = "pymmcore"
-version = "12.5.0.75.0"
+version = "12.2.2.75.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "numpy" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f5/51/e75186deeff67e4ba5b6c340343d7efc2d6819a2607e1927547754ea6183/pymmcore-12.5.0.75.0.tar.gz", hash = "sha256:c78670ff99ea2a4424d41eea7f0f0b6059053689af7700a5b19815fa8dde8390", size = 1418871, upload-time = "2026-05-06T08:34:20.948Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/3f/37/377f3704084ec2249f843533fd24f9611d1c9aea706fd3a5faff7770149e/pymmcore-12.2.2.75.0.tar.gz", hash = "sha256:53a8b9208d9d4c42efc018ef2d2eefc68b6bd34a3c095f33a02988af83e074a5", size = 1403238, upload-time = "2026-03-25T00:41:28.623Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e6/0d/03271a7952cbebeb8d773e4827415ed653179a7d6bb881a04db8e8c30613/pymmcore-12.5.0.75.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:6cce904e951c868895809ca423b4b1935542928bec90f6c12f2ae2a91f725db3", size = 953414, upload-time = "2026-05-06T08:34:01.254Z" },
-    { url = "https://files.pythonhosted.org/packages/63/0c/e1456b1c1aa5cbaa9f6728a3f30cdcf30f8187b577a8ad062d345be9c750/pymmcore-12.5.0.75.0-cp312-cp312-macosx_11_0_x86_64.whl", hash = "sha256:b87f2a2c08dab610905575953e8dcc3f0cec999571c07f618c68ab2bbee201b4", size = 1006454, upload-time = "2026-05-06T08:34:02.966Z" },
-    { url = "https://files.pythonhosted.org/packages/5f/b6/eaebb16c8aba2dd4657acb7116f1714bfdafffbdb2e9dcb79eaf506ee373/pymmcore-12.5.0.75.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:1e64c3688a25d1a964b2e1ec732cacb83c01258a3e0f9e306b4bd9ebb4f4a4c2", size = 1250052, upload-time = "2026-05-06T08:34:04.57Z" },
-    { url = "https://files.pythonhosted.org/packages/e2/76/a0059dee9fbca8d9b4214534af11e8c9ecc7a2520e6fe7eae09114ec2470/pymmcore-12.5.0.75.0-cp312-cp312-win_amd64.whl", hash = "sha256:6a8b0e7a0bac2af5496fefa6b6291f76a8640a75cb75adfaf28b1288e91340a5", size = 777918, upload-time = "2026-05-06T08:34:06.189Z" },
-    { url = "https://files.pythonhosted.org/packages/4e/9b/1f23574154d25c08a7364615e2403e0c339c449fca37ebf16a1aa77b8cd5/pymmcore-12.5.0.75.0-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:0a559ac0e9e3918b19fc18d0cac733f12b328201f10c917d50b37f031935531b", size = 972415, upload-time = "2026-05-06T08:34:07.681Z" },
-    { url = "https://files.pythonhosted.org/packages/17/06/e03d10ef62060a31c67ae76bbf4a91afc021d01af4ed7e74b1252f6cd575/pymmcore-12.5.0.75.0-cp313-cp313-macosx_11_0_x86_64.whl", hash = "sha256:b427d9aadbf4c731b19d479b396ade5a872d16653d15030ce5467e8d820c57c9", size = 1020680, upload-time = "2026-05-06T08:34:09.06Z" },
-    { url = "https://files.pythonhosted.org/packages/8d/d6/1ae1574b96b674f33a863f1656f0bdc4f95f28771b3c9144f4b1ec0d5fe9/pymmcore-12.5.0.75.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:a07b4203822b65288946c1fbffd8bd3c413e23a1b0086ba8273ca98c7c721183", size = 1250853, upload-time = "2026-05-06T08:34:10.385Z" },
-    { url = "https://files.pythonhosted.org/packages/af/7a/9f8556ff3dc37ee67edf54543327864567abcb4941d0b3ff882adc0d9fa3/pymmcore-12.5.0.75.0-cp313-cp313-win_amd64.whl", hash = "sha256:e871d73da442a6d17ac7e39c239ddc61178cfc53a2e6386e4d4496d46a89926a", size = 777956, upload-time = "2026-05-06T08:34:13.006Z" },
-    { url = "https://files.pythonhosted.org/packages/c6/5b/d2413012632b8e674bb55867e4354596fe5619af7e3cc91908925fce4725/pymmcore-12.5.0.75.0-cp314-cp314-macosx_11_0_arm64.whl", hash = "sha256:1f11aab098f0e36b9db7d4e73b82a217857bce065f42f36e154b71c9bfe3a918", size = 973291, upload-time = "2026-05-06T08:34:14.505Z" },
-    { url = "https://files.pythonhosted.org/packages/45/ff/c39e52d38c4f0d57c7f05d67387d07c1c49680a8ff17e59571480ca68d80/pymmcore-12.5.0.75.0-cp314-cp314-macosx_11_0_x86_64.whl", hash = "sha256:226164a2d424dc017e9cf9f675e732599fc8242d97a822f3141225adb075cf8b", size = 1023703, upload-time = "2026-05-06T08:34:16.318Z" },
-    { url = "https://files.pythonhosted.org/packages/65/e3/0ab664adde1eb500b54ce592dd361b2aa94d8159bc43bb835dd272686f34/pymmcore-12.5.0.75.0-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:1bc6fb9aae9941337935b1ddf77c08d82c0dc1158e01d23cacc0048427329cb5", size = 1250626, upload-time = "2026-05-06T08:34:18.116Z" },
-    { url = "https://files.pythonhosted.org/packages/1c/49/f5bb70814568022bdd1aa26f31321397e44d2e9c812d4b0bf322b01ddba6/pymmcore-12.5.0.75.0-cp314-cp314-win_amd64.whl", hash = "sha256:5dff6e13926d473e123a6e01732f99313442307157cbe65cecd94815527d4ea7", size = 792936, upload-time = "2026-05-06T08:34:19.568Z" },
+    { url = "https://files.pythonhosted.org/packages/f7/04/05005320d4a689e4e6ef8b7db60f41ec41d2fa08b1f8c124031e3512650a/pymmcore-12.2.2.75.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:0cd2df445057f501cb56973724729cb9b008a70ac892a9794392bdc590ab137d", size = 937796, upload-time = "2026-03-25T00:41:08.596Z" },
+    { url = "https://files.pythonhosted.org/packages/03/b3/6021f3f41f297eb4c09b0dde442b89dd55ceae9c0e613d66ed860deb6879/pymmcore-12.2.2.75.0-cp312-cp312-macosx_11_0_x86_64.whl", hash = "sha256:535930c186a9c2b9f1693a74e25cad01ab3d86d72d35c1ff031c50f8516360d3", size = 985550, upload-time = "2026-03-25T00:41:10.009Z" },
+    { url = "https://files.pythonhosted.org/packages/1d/05/891e1eabfbb19a79a3a30f7c8d7e4fa17f3a546b0bc02fcb937a3d556c1f/pymmcore-12.2.2.75.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:f88c4eeba1dca4912c1c0c5f58a4c081d6654f0a761c8063b880d55f0cda5c4f", size = 1148305, upload-time = "2026-03-25T00:41:11.741Z" },
+    { url = "https://files.pythonhosted.org/packages/5d/85/5788930053c94ce71c49aa2aa70f947396da512d4225967e1756a34643f1/pymmcore-12.2.2.75.0-cp312-cp312-win_amd64.whl", hash = "sha256:253ffb7f1a148a016936436e17a2c084d6fd5f41805cc9147f03d08bcaacd91c", size = 755855, upload-time = "2026-03-25T00:41:13.319Z" },
+    { url = "https://files.pythonhosted.org/packages/c9/37/2b6524d335251be747de5ec8fedf46028562f5f255633ff05a48f9e62dbb/pymmcore-12.2.2.75.0-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:299757d79f04b41e6492b1ad1ed8bfb30ae5d8bae8f752075c1bd98571bc0247", size = 953582, upload-time = "2026-03-25T00:41:15.053Z" },
+    { url = "https://files.pythonhosted.org/packages/fc/4a/61df65811ce4c2915c6576fc4cf04da40bc82f73d19da37a5f733a85d576/pymmcore-12.2.2.75.0-cp313-cp313-macosx_11_0_x86_64.whl", hash = "sha256:15646ccfb68feca840cdc53d9d73038811abecdf6ec9f4a7debf5c681e6320cd", size = 1003320, upload-time = "2026-03-25T00:41:16.606Z" },
+    { url = "https://files.pythonhosted.org/packages/63/d1/68e1545f0ff4b84eb32dc562d62a75ddeff65d342cf4c2d43f5ecd9f20c5/pymmcore-12.2.2.75.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:b33ddac974e74150a6f3690732049772a7659b84220aa57a7c265f311791656c", size = 1148198, upload-time = "2026-03-25T00:41:18.162Z" },
+    { url = "https://files.pythonhosted.org/packages/92/51/fff1e432a3d00218d053e34f6079110c8629151199cebc11e09e6a522b60/pymmcore-12.2.2.75.0-cp313-cp313-win_amd64.whl", hash = "sha256:ba85fe2e1555fe5edf4c44f40a9090eae63241b00dca40d4eaccb3d6cd89ee0a", size = 755780, upload-time = "2026-03-25T00:41:19.648Z" },
+    { url = "https://files.pythonhosted.org/packages/6a/97/0dfd62ad6828c0bc783f44ddbe6d82e03ed7a8a192fca91745885a0bf8ad/pymmcore-12.2.2.75.0-cp314-cp314-macosx_11_0_arm64.whl", hash = "sha256:f0179fcc7d2b775c15fe8c46d129564d3cb2cab936bd16c8130e20f5d20f54f6", size = 954242, upload-time = "2026-03-25T00:41:21.907Z" },
+    { url = "https://files.pythonhosted.org/packages/eb/5c/6390dadb67efecbc658291b634753457bbf5afab433eed85dc6b0ea587fd/pymmcore-12.2.2.75.0-cp314-cp314-macosx_11_0_x86_64.whl", hash = "sha256:96f56a09a0932ad62c35ed597ffde666246d842167ac3d662a9c048c8489f72d", size = 1005555, upload-time = "2026-03-25T00:41:23.308Z" },
+    { url = "https://files.pythonhosted.org/packages/46/1f/fc15df31a025ac76f9074a5158c8da7b631356ba3a2683de578467306e99/pymmcore-12.2.2.75.0-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:072d60e2f0ed014b7f4fb38253fa72f63e3a334bac3fa68a8487ac3d4d871103", size = 1147679, upload-time = "2026-03-25T00:41:24.856Z" },
+    { url = "https://files.pythonhosted.org/packages/db/55/6e596755e3887173b2f1bd512408c4498dd65a4b95e6dc0287d60a55d1cf/pymmcore-12.2.2.75.0-cp314-cp314-win_amd64.whl", hash = "sha256:17065b10378ae7684d62010b740b4e5adfee09b84a4ec585353342644764a677", size = 769747, upload-time = "2026-03-25T00:41:26.66Z" },
 ]
 
 [[package]]
@@ -3375,8 +3378,8 @@ cli = [
 
 [[package]]
 name = "pymmcore-widgets"
-version = "2026.9.2.dev1+gd3d8282a6"
-source = { git = "https://github.com/pertzlab/pymmcore-widgets.git?branch=pertzlab#d3d8282a68d978915b584c0b16168a6fc1d9c3ae" }
+version = "2026.9.2.dev2+g72c302cf4"
+source = { git = "https://github.com/pertzlab/pymmcore-widgets.git?branch=pertzlab#72c302cf4395ea935eabae2b40cdf7a65e1f415b" }
 dependencies = [
     { name = "pymmcore-plus", extra = ["cli"] },
     { name = "pyopengl", marker = "sys_platform == 'darwin'" },
